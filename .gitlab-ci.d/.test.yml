@@ -1,0 +1,11 @@
+---
+php:linter:
+  stage: test
+  image: registry.gitlab.com/pipeline-components/php-linter:latest
+  except:
+    variables:
+      - $CI_SKIP_BUILD == "true"
+  tags:
+    - gitlab-ci
+  script:
+    - parallel-lint --colors .

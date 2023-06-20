@@ -1,0 +1,14 @@
+---
+stages:
+ - install
+ - test
+ - build
+ - development
+ - production
+
+include:
+  - local: '/.gitlab-ci.d/.install.yml'
+  - local: '/.gitlab-ci.d/.test.yml'
+  - local: '/.gitlab-ci.d/.build.yml'
+  - local: '/.gitlab-cd.d/.deploy-dev.yml'
+  - local: '/.gitlab-cd.d/.deploy-prod.yml'

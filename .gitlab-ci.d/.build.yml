@@ -1,0 +1,14 @@
+---
+docker:build:
+  stage: build
+  image: docker:stable
+  except:
+    variables:
+      - $CI_SKIP_BUILD == "true"
+  tags:
+    - gitlab-ci
+  before_script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+  script:
+    - docker build --pull -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}" .
+    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"

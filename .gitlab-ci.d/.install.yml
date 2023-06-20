@@ -1,0 +1,17 @@
+---
+
+composer:
+  stage: install
+  image: composer:2.5
+  except:
+    variables:
+      - $CI_SKIP_BUILD == "true"
+  tags:
+    - gitlab-ci
+  script:
+    - composer install
+  artifacts:
+    name: composer-${CI_COMMIT_REF_SLUG}
+    paths:
+      - vendor
+    expire_in: 1d

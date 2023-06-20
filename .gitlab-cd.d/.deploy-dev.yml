@@ -1,0 +1,13 @@
+---
+deploy:develop:
+  stage: development
+  image: docker:stable
+  tags:
+    - dev-runner
+  when: manual
+  except:
+    - master
+  before_script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+  script:
+    - docker stack deploy --with-registry-auth -c docker-compose.yml ${CI_COMMIT_REF_SLUG}

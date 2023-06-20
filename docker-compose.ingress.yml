@@ -1,0 +1,45 @@
+---
+version: '3.8'
+
+volumes:
+  data-storage:
+
+networks:
+  ingress-net:
+    name: ingress_net
+    driver: overlay
+    attachable: true
+
+services:
+  traefik:
+    image: traefik:v2.9.6
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.watch=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.swarmMode=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.forwardedHeaders.insecure=true"
+      - "--log.level=DEBUG"
+      - "--accesslog=true"
+
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    networks:
+      - ingress-net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - data-storage:/etc/traefik/storage
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 3s
+      labels:
+        - "traefik.enable=false"
